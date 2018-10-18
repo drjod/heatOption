@@ -1,0 +1,22 @@
+
+<?xml version="1.0"?>
+<data_set>
+<european_option>
+	<interest_rate>0.1</interrest_rate>
+	<dividend>0.0</dividend>
+	<volatility>0.3</volatility>
+	<forcing_term>0.0</forcing_term>
+	<strike_price>10.</strike_price>
+</european_option>
+
+<domain>
+	<underlying>
+		<minimum>0.</minimum>
+		<maximum>20.</maximum>
+	</underlying>
+	<time>
+		<minimum>0.</minimum>
+		<maximum>0.01</maximum>
+	</time>
+</domain>
+</data_set>
