@@ -1,27 +1,22 @@
 #!/bin/bash
 
-make clear
-if [ "$1" = "c++11" ]; then
-	make STRUFLAG=-std=c++11
-else
-	make
-fi
+bash build.sh
 
 
 echo "**********************"
 echo "**** TESTING STRU ****"
 echo "**********************"
-./testing_stru
+build/run_struTests
 
 echo "***********************"
 echo "**** TESTING STRU2 ****"
 echo "***********************"
-./testing_stru2
+build/run_stru2Tests
 
 echo "***********************"
 echo "**** TESTING STRU3 ****"
 echo "***********************"
-./testing_stru3
+build/run_stru3Tests
 
 
 
