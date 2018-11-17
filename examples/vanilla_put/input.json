@@ -1,0 +1,29 @@
+
+{
+	"european option":
+	{
+		"type": "put",
+		"interest rate": 0.1,
+		"dividend": 0.0,
+		"volatility": 0.3,
+		"forcing term": 0.0,
+		"strike price": 10
+	},
+
+	"domain":
+	{
+		"underlying":
+		{
+			"minimum": 0.0,
+			"maximum": 20.0,
+			"steps": 100
+		},
+		"time":
+		{
+			"minimum": 0.0,
+			"maximum": 0.01,
+			"steps": 50
+		}
+	}
+}
+

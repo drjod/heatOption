@@ -106,3 +106,47 @@ BENCHMARK(bcgs)
 	for(int i=0; i<3;++i)
 		solve(DIM);	
 }
+
+
+// --------------------------------------------------------
+// parallel
+
+
+BENCHMARK(gauss_large)
+{
+	const int size = 5000;
+
+	DMat A(size, size);
+    DVec b(size), x(size);
+
+    for(int i=1; i<size-1;++i)
+    {
+        A(i, i+1) = 1;
+        A(i, i) = -2;
+        A(i, i-1) = 1;
+    }
+    A(0, 0) = 1;
+    A(size-1, size-1) = 1;
+    b(0) = 2;
+    b(size-1) = 1;
+
+	classical_elimination(A, b);
+	x = back_substitution(A, b);
+	//std::cout << x << '\n';
+}
+
+
+BENCHMARK(parallelMatrixVectorMultiplication)
+{
+	const int size = 10000;
+	const int size2 = 100000;
+	DMat* m = new DMat(size, size2);
+	DVec* v1 = new DVec(size2);
+	DVec v2(size);
+	//for(int i=0; i<1000;++i)
+		v2 = matrix_multiply(*m, *v1);
+
+	delete m;
+	delete v1;
+}
+

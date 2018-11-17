@@ -1,8 +1,7 @@
 //#include "gauss.h"
 
 
-
-TEST(gauss, all)
+TEST(gauss, small)
 {
 	//DMat A{{2, 1, -1},{-3, -1, 2},{-2, 1, 2}};
 	//DVec b{8, -11, -3}, x(3);
@@ -33,4 +32,32 @@ TEST(gauss, all)
     EXPECT_EQ("(2 3 -1)\n", 
 			testing::internal::GetCapturedStdout());
 
+
+}
+
+
+
+TEST(gauss, large)
+{
+	const long size = 100;
+
+    DMat A(size, size);
+    DVec b(size), x(size);
+
+	for(int i=1; i<size-1;++i)
+	{
+		A(i, i+1) = 1;
+		A(i, i) = -2;
+		A(i, i-1) = 1;
+	}
+
+	A(0, 0) = 1;
+	A(size-1, size-1) = 1;
+	b[0] = 2;
+	b[size-1] = 1;
+
+	classical_elimination(A, b);
+	x = back_substitution(A, b);
+
+//	std::cout << x << '\n';
 }

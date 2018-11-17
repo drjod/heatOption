@@ -12,6 +12,8 @@ include_directories(
         "${PROJECT_SOURCE_DIR}/solver"
         "${PROJECT_SOURCE_DIR}/supplements"
         "${PROJECT_SOURCE_DIR}/simulator"
+        "${PROJECT_SOURCE_DIR}/simulator/miscellaneous"
+        "${PROJECT_SOURCE_DIR}/benchmarks/dbench"
 ) 
 
 set(CMAKE_CXX_FLAGS "-Wall -pthread -fopenmp")
@@ -35,5 +37,10 @@ target_link_libraries(run_stru2Tests gtest gtest_main)
 
 add_executable(run_stru3Tests gtest/allStru3Tests.cpp)
 target_link_libraries(run_stru3Tests gtest gtest_main) 
+
+add_subdirectory(simulator)
+add_executable(simulate simulator/main.cpp)
+target_link_libraries(simulate input_json) 
+
 
 

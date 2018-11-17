@@ -1,0 +1,31 @@
+
+{
+	"european option":
+	{
+		"type": "call",
+		"interest rate": 0.06,
+		"dividend": 0.04,
+		"volatility": 0.15,
+		"forcing term": 0.0,
+		"strike price": 550,
+		"cap": 50,
+		"asymmetric power": 1
+	},
+
+	"domain":
+	{
+		"underlying":
+		{
+			"minimum": 0.0,
+			"maximum": 1000.0,
+			"steps": 1000
+		},
+		"time":
+		{
+			"minimum": 0.0,
+			"maximum": 0.5,
+			"steps": 100
+		}
+	}
+}
+

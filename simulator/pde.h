@@ -27,8 +27,9 @@ public:
 		_forcing = TwoVarDFunction<double, double, double>(
 			std::bind(BLACK_SCHOLES::forcing_coefficient, std::ref(dataSet), std::placeholders::_1));
 
-		ic = AtomicDFunction<double, double>(
-			std::bind(BLACK_SCHOLES::IC, std::ref(dataSet), std::placeholders::_1));
+		ic = (dataSet.option.get_type() == EuropeanOption::Call)?
+				AtomicDFunction<double, double>(std::bind(BLACK_SCHOLES::IC_call, std::ref(dataSet), std::placeholders::_1)) :
+				AtomicDFunction<double, double>(std::bind(BLACK_SCHOLES::IC_put, std::ref(dataSet), std::placeholders::_1));
 		bcl = AtomicDFunction<double, double>(
 			std::bind(BLACK_SCHOLES::BC_left, std::ref(dataSet), std::placeholders::_1));
 		bcr = AtomicDFunction<double, double>(

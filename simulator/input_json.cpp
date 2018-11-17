@@ -33,8 +33,8 @@ void read_data_json(std::istream& is, DataSet& dataSet)
     if(qi::phrase_parse(it, json_text.end(), grammar, qi::space, result) &&                                          
         it == json_text.end())
 	{
-		boost::apply_visitor(parser::JSONPrinter(), result);
-		std::cout << "\n"; 
+		// boost::apply_visitor(parser::JSONPrinter(), result);
+		// std::cout << "\n"; 
 	}
 	else
 		std::cout << "Not JSON\n";
@@ -77,44 +77,43 @@ EuropeanOption set_europeanOption(parser::Object object)
 	{
 		if(it->first == "type")
 		{
-			option.type = (boost::get<std::string>(it->second) == "put") ? 
-							EuropeanOption::Put : EuropeanOption::Call ;
+			option.set_type(boost::get<std::string>(it->second));
 		}
 		else if(it->first == "strike price")
 		{
-			option.strike_price = boost::get<double>(it->second);
+			option.set_strike_price(boost::get<double>(it->second));
 		}
 		else if(it->first == "volatility")
 		{
-			option.volatility = boost::get<double>(it->second);
+			option.set_volatility(boost::get<double>(it->second));
 		}
 		else if(it->first == "interest rate")
 		{
-			option.interest_rate = boost::get<double>(it->second);
+			option.set_interest_rate(boost::get<double>(it->second));
 		}
 		else if(it->first == "dividend")
 		{
-			option.dividend = boost::get<double>(it->second);
+			option.set_dividend(boost::get<double>(it->second));
 		}
 		else if(it->first == "forcing term")
 		{
-			option.force = boost::get<double>(it->second);
+			option.set_force(boost::get<double>(it->second));
 		}
 		else if(it->first == "rebate")
 		{
-			option.rebate = boost::get<double>(it->second);
+			option.set_rebate(boost::get<double>(it->second));
 		}
 		else if(it->first == "cap")
 		{
-			option.cap = boost::get<double>(it->second);
+			option.set_cap(boost::get<double>(it->second));
 		}
 		else if(it->first == "symmetric power")
 		{
-			option.power_symmetric = boost::get<double>(it->second);
+			option.set_power_symmetric(boost::get<double>(it->second));
 		}
-		else if(it->first == "assymmetric power")
+		else if(it->first == "asymmetric power")
 		{
-			option.power_assymmetric = boost::get<double>(it->second);
+			option.set_power_asymmetric(boost::get<double>(it->second));
 		}
 		else
 		{

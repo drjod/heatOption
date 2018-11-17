@@ -1,6 +1,8 @@
 #ifndef MATRIX_MATH_H
 #define MATRIX_MATH_H
 
+#include <omp.h>
+#include <cmath>
                                                                                                            
 //    multiplication                                                                                                
 template<typename T>                                                                                          
@@ -48,6 +50,7 @@ Matrix<T, 2> operator*(const Matrix<T, 2>& m1, const Matrix<T, 2>& m2)
 	return res;
 }                                                                                                             
                                                                                                               
+// -------------------------------------------------------------------------------------------
 
 template<typename T>                                                                                          
 T dot_product(const Matrix<T, 1>& v1, const Matrix<T, 1>& v2)                                                 
@@ -61,6 +64,7 @@ T dot_product(const Matrix<T, 1>& v1, const Matrix<T, 1>& v2)
 	return sum;
 }                                                                                                             
 
+// -------------------------------------------------------------------------------------------
                     
 template<typename T>
 Matrix<T, 1> scale_and_add(const Matrix<T, 1>& a, const T& c, const Matrix<T, 1>& b)
@@ -90,5 +94,40 @@ Matrix<T, N> operator-(const Matrix<T, N>& m1, const Matrix<T, N>& m2)
 }
 */
 
+// -------------------------------------------------------------------------------------------
+
+
+template<typename T>                                                                                          
+Matrix<T, 1> matrix_multiply(const Matrix<T, 2>& m, const Matrix<T, 1>& v)                                          
+{                                                                                                             
+    const size_type nr = m.dim1();                                                                         
+    const size_type nc = m.dim2();                                                                         
+    Matrix<T, 1> res(nr);                                                                                     
+
+	#pragma omp parallel num_threads(1)
+	{
+		int n = omp_get_thread_num();
+		int t = omp_get_num_threads();		
+		int bs = 256;  // block size
+		Matrix<T, 1> res_local(nr);
+		
+		//for(size_type i=0; i<nr; ++i)                                                                            
+		//	for(size_type k=n; k<std::ceil(double(nc)/bs); k+=t)
+		//		for(size_type j=k*bs; j<(k+1)*bs && j<nc; j+=1)                                                                        
+		//for(size_type k=n; k<std::ceil(double(nr)/bs); k+=t)
+		//	for(size_type i=k*bs; i<(k+1)*bs && i<nr; i+=1)																
+			#pragma omp for schedule(static, 512)
+			for(size_type i=0; i<nr; ++i)                                                                            
+				for(size_type j=0; j<nc; ++j)                                                                            
+				{
+					res_local(i) += m(i, j) * v(j);
+				}
+
+		#pragma omp critical
+		res += res_local;                                                               
+	}
+    return res;                                                                                               
+}                                                                                                             
+                 
 
 #endif

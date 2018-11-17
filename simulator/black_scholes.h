@@ -14,7 +14,8 @@ namespace BLACK_SCHOLES
 
 double diffusion_coefficient(const DataSet& dataSet, const pair<double,double>& state)
 { 
-	return 0.5 * dataSet.option.volatility * dataSet.option.volatility * state.first * state.first; 
+	return 0.5 * dataSet.option.get_volatility() * dataSet.option.get_volatility() * 
+					state.first * state.first; 
 }
 
 /*
@@ -33,35 +34,37 @@ double sigma_linear(const pair<double,double>& state)
 //drift
 double convection_coefficient(const DataSet& dataSet, const pair<double,double>& state)
 { 
-	return (dataSet.option.interest_rate - dataSet.option.dividend) * state.first;
+	return (dataSet.option.get_interest_rate() - dataSet.option.get_dividend()) * state.first;
 }
 
 double forcing_coefficient(const DataSet& dataSet, const pair<double,double>& state)
 { 
-	return dataSet.option.force; 
+	return dataSet.option.get_force(); 
 }
 
 // free term
 double b(const DataSet& dataSet, const pair<double,double>& state) 
 { 
-	return -dataSet.option.interest_rate; 
+	return -dataSet.option.get_interest_rate(); 
 }
 
 // ------------------------------------------------------------------------------
 
 // ICs - payoff functions
-double IC(const DataSet& dataSet, const double& s) 
+double IC_call(const DataSet& dataSet, const double& s) 
 { 
-	return (s>dataSet.option.strike_price) ? 
-		std::min(dataSet.option.cap, pow(s - pow(dataSet.option.strike_price, dataSet.option.power_assymmetric), 
-				dataSet.option.power_symmetric)) : 0.; 
+	return (s>dataSet.option.get_strike_price()) ? 
+		std::min(dataSet.option.get_cap(), pow(s - pow(dataSet.option.get_strike_price(),
+				dataSet.option.get_power_asymmetric()), 
+				dataSet.option.get_power_symmetric())) : 0.; 
 }
 
 double IC_put(const DataSet& dataSet, const double& s) 
 {
-	return (s<dataSet.option.strike_price) ? 
-		std::min(dataSet.option.cap, pow(pow(dataSet.option.strike_price, dataSet.option.power_assymmetric)-s, 
-				dataSet.option.power_symmetric)) : 0.; 
+	return (s<dataSet.option.get_strike_price()) ? 
+		std::min(dataSet.option.get_cap(), pow(pow(dataSet.option.get_strike_price(), 
+				dataSet.option.get_power_asymmetric())-s, 
+				dataSet.option.get_power_symmetric())) : 0.; 
 }	
 
 // ------------------------------------------------------------------------------
@@ -69,12 +72,12 @@ double IC_put(const DataSet& dataSet, const double& s)
 // BCs
 double BC_left(const DataSet& dataSet, const double& t) 
 {
-	if(dataSet.option.type == EuropeanOption::Call)
+	if(dataSet.option.get_type() == EuropeanOption::Call)
 		return 0.; 
 	else
 	{	// put
-		if(dataSet.option.rebate >= 0.)
-			return dataSet.option.rebate;
+		if(dataSet.option.get_rebate() >= 0.)
+			return dataSet.option.get_rebate();
 		else
 			return IC_put(dataSet, dataSet.domain.xaxis.low()); 
 	}
@@ -82,12 +85,12 @@ double BC_left(const DataSet& dataSet, const double& t)
 
 double BC_right(const DataSet& dataSet, const double& t) 
 {
-	if(dataSet.option.type == EuropeanOption::Call)
+	if(dataSet.option.get_type() == EuropeanOption::Call)
 	{
-		if(dataSet.option.rebate >= 0.)
-			return dataSet.option.rebate;
+		if(dataSet.option.get_rebate() >= 0.)
+			return dataSet.option.get_rebate();
 		else
-			return IC(dataSet, dataSet.domain.xaxis.high()); 
+			return IC_call(dataSet, dataSet.domain.xaxis.high()); 
 	}
 	else  //put
 		return 0.; 

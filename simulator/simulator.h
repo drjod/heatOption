@@ -2,8 +2,8 @@
 #define SIMULATOR_H
 
 #include <iostream>
-#define LOG(x) std::cout << x << '\n'
 
+#include "utilities.h"
 #include "pde.h"
 #include "discretization.h"
 #include "double_sweep.h"
@@ -43,7 +43,7 @@ public:
     Discretization get_discretization() const { return discretization; }
 
 	void calculate_secondaryVariables();
-	void write_result(std::ostream& os);
+	void write_result(const double& time, std::string file_name, bool append=false);
 };
 
 void Simulator::run()
@@ -53,36 +53,36 @@ void Simulator::run()
     for (auto it = std::begin(primaryVariable); it != std::end(primaryVariable); ++it, ++j )
 		*it = pde->IC(discretization.getXGrid()[j]);
 
-	LOG("IC: " << primaryVariable);
+	// LOG("IC: " << primaryVariable);
+
+	write_result(time_current, "output.dat");  // write IC
+
 	while(time_current < discretization.getTaxis().high())
+	{
         advance();
-	LOG("Result: " << primaryVariable);
+	}
 
 	calculate_secondaryVariables();
-
-	write_result(std::cout);
-	std::ofstream os("output.dat");
-	write_result(os);
+	write_result(time_current, "output.dat", true);
+	// LOG("Result: " << primaryVariable);
 
 }
 
 
 void Simulator::advance()
 {
-	double t = time_current;
-
-	// LOG("Step: " << timeStep_current << " - Time: " << t);
+	//LOG("Step: " << timeStep_current << " - Time: " << t);
 
 	assembly.configure();
 	assembly.assemble_mass();
-	assembly.assemble_convection(t);
-	assembly.assemble_diffusion(t);
-	assembly.assemble_forcing(t);
+	assembly.assemble_convection(time_current);
+	assembly.assemble_diffusion(time_current);
+	assembly.assemble_forcing(time_current);
 	
 	//assembly.log_matrices();
 
 	primaryVariable = double_sweep(assembly.A_implicit, assembly.B_implicit, assembly.C_implicit,
-			assembly.determine_RHS(t, primaryVariable));
+			assembly.determine_RHS(time_current, primaryVariable));
 
 	//LOG(primaryVariable);
 
@@ -112,12 +112,19 @@ void Simulator::calculate_secondaryVariables()
 }
 
 
-void Simulator::write_result(std::ostream& os)
+void Simulator::write_result(const double& time, std::string file_name, bool append)
 {
-	for(long i = 0; i <discretization.getXGrid().size();++i)
-		os << discretization.getXGrid()[i] << '\t' << primaryVariable[i] << '\t' 
-			<< delta[i] << '\t' << gamma[i] << '\n';
+	std::ofstream os;
+	if (append)
+		os.open(file_name, std::ios_base::app);
+	else
+		os.open(file_name);
 
+	for(long i = 0; i <discretization.getXGrid().size();++i)
+		os << time << '\t' << discretization.getXGrid()[i] << '\t'
+			<< primaryVariable[i] << '\t' << delta[i] << '\t' << gamma[i] << '\n';
+
+	os.close();
 }
 
 #endif

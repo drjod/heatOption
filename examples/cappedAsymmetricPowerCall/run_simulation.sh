@@ -1,0 +1,2 @@
+
+./../../build/simulate input.json

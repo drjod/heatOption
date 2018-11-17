@@ -29,7 +29,7 @@ public:
 	R add(const AtomicDFunction<D,R>& f2, const D& x) const
 	{ return calculate(x) + f2.calculate(x); }
 private:
-	//R (*f)(const D& x);		// Hidden classic C-type function
+	//R (*f)(const D& x);
 	std::function<R(const D& x)> f;
 };
 

@@ -8,9 +8,9 @@ using namespace stru3;
 #include "timer.h"
 
 
-int main()
+int main(int argc, char *argv[])
 {
-	std::ifstream is_json("input.json");
+	std::ifstream is_json(argv[1]);
 	DataSet dataSet;
 	read_data_json(is_json, dataSet);
 
@@ -22,13 +22,5 @@ int main()
 
 	timer.stop();
 
-	//LOG("str" << dataSet.option.strike_price);
-	//std::cout << "Analyt:\n" << dataSet.domain.taxis.high() << '\n';
-	/*for(int i=0; i<simulator.get_discretization().getXGrid().size();++i)
-	{
-		std::cout << simulator.get_discretization().getXGrid()[i] << " " 
-			<< dataSet.option.vanilla_value(simulator.get_discretization().getXGrid()[i], dataSet.domain.taxis.high()) << '\n';
-		std::cout << std::endl;
-	}*/
 	return 0;
 }

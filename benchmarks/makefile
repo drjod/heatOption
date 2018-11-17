@@ -1,5 +1,5 @@
 INCLUDE=-Idbench -I../matrix_stru -I../matrix_stru2 -I../matrix_stru3 -I../solver -I../setups -I../supplements
-CXXFLAGS= $(INCLUDE) -O3 -Wall 
+CXXFLAGS= $(INCLUDE) -O3 -Wall -fopenmp 
 #-std=c++11
 
 all: allStruBenchmarks allStru3Benchmarks
